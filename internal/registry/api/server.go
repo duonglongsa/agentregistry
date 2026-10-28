@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	govapi "github.com/agentregistry-dev/agentregistry/internal/registry/api/handlers/governance"
+	gov "github.com/agentregistry-dev/agentregistry/internal/registry/governance"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/rs/cors"
 
@@ -228,4 +230,11 @@ func (s *Server) Start() error {
 
 func (s *Server) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
+}
+
+// ConfigureGovernance adds the scoped transport and guards alternate upstream
+// routes whose list implementations have no department filter.
+func (s *Server) ConfigureGovernance(service *gov.Service, authn *gov.LocalAuth) {
+	govapi.Register(s.humaAPI, service, authn)
+	s.server.Handler = authn.Guard(s.server.Handler)
 }

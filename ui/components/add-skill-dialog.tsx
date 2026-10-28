@@ -91,16 +91,16 @@ export function AddSkillDialog({ open, onOpenChange, onSkillAdded }: AddSkillDia
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Skill</DialogTitle>
+          <DialogTitle>Thêm Skill</DialogTitle>
           <DialogDescription>
-            Add a new skill to the registry
+            Thêm Skill mới vào Registry
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="name">
-              Skill Name <span className="text-red-500">*</span>
+              Tên Skill <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -115,7 +115,7 @@ export function AddSkillDialog({ open, onOpenChange, onSkillAdded }: AddSkillDia
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              Description <span className="text-red-500">*</span>
+              Mô tả <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="description"
@@ -171,10 +171,10 @@ export function AddSkillDialog({ open, onOpenChange, onSkillAdded }: AddSkillDia
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
-              Cancel
+              Hủy
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : "Add Skill"}
+              {loading ? "Đang thêm..." : "Thêm Skill"}
             </Button>
           </div>
         </form>

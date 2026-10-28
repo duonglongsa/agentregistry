@@ -120,20 +120,20 @@ export function PromptDetail({ prompt, allTags: allTagsProp }: PromptDetailProps
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="raw">Raw</TabsTrigger>
+            <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+            <TabsTrigger value="raw">Dữ liệu thô</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             {promptData.description && (
               <section>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Description</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Mô tả</h3>
                 <p className="text-[15px] leading-relaxed">{promptData.description}</p>
               </section>
             )}
 
             <section>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Content</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Nội dung</h3>
               <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm whitespace-pre-wrap break-words leading-relaxed">
                 {promptData.content}
               </pre>
@@ -148,7 +148,7 @@ export function PromptDetail({ prompt, allTags: allTagsProp }: PromptDetailProps
                   Raw JSON
                 </h3>
                 <Button variant="outline" size="sm" onClick={handleCopyJson} className="gap-1.5 h-7 text-xs">
-                  {jsonCopied ? <><Check className="h-3 w-3" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
+                  {jsonCopied ? <><Check className="h-3 w-3" /> Đã sao chép</> : <><Copy className="h-3 w-3" /> Sao chép</>}
                 </Button>
               </div>
               <pre className="bg-muted p-3 rounded-md overflow-x-auto text-xs leading-relaxed">

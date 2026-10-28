@@ -12,6 +12,7 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 	"sigs.k8s.io/yaml"
 
+	govapi "github.com/agentregistry-dev/agentregistry/internal/registry/api/handlers/governance"
 	"github.com/agentregistry-dev/agentregistry/internal/registry/api/router"
 	"github.com/agentregistry-dev/agentregistry/internal/registry/config"
 	arv0 "github.com/agentregistry-dev/agentregistry/pkg/api/v0"
@@ -85,5 +86,6 @@ func generateSpec(apiVersion string) *huma.OpenAPI {
 		panic(fmt.Sprintf("router.RegisterRoutes: %v", err))
 	}
 
+	govapi.Register(api, nil, nil)
 	return api.OpenAPI()
 }

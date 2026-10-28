@@ -64,3 +64,6 @@ _output/
 
 # Default security scan report folder (make security-scan)
 scans/
+
+# Opt-in local governance demo credentials and evidence
+.local/

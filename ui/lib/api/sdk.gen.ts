@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ApplyBatchData, ApplyBatchErrors, ApplyBatchResponses, ApplyDeploymentData, ApplyDeploymentErrors, ApplyDeploymentResponses, ApplyRuntimeData, ApplyRuntimeErrors, ApplyRuntimeResponses, ApplySecretData, ApplySecretErrors, ApplySecretResponses, DeleteAgentData, DeleteAgentErrors, DeleteAgentResponses, DeleteBatchData, DeleteBatchErrors, DeleteBatchResponses, DeleteDeploymentData, DeleteDeploymentErrors, DeleteDeploymentResponses, DeleteMcpserverData, DeleteMcpserverErrors, DeleteMcpserverResponses, DeleteModelData, DeleteModelErrors, DeleteModelResponses, DeletePluginData, DeletePluginErrors, DeletePluginResponses, DeletePromptData, DeletePromptErrors, DeletePromptResponses, DeleteRuntimeData, DeleteRuntimeErrors, DeleteRuntimeResponses, DeleteSecretData, DeleteSecretErrors, DeleteSecretResponses, DeleteSkillData, DeleteSkillErrors, DeleteSkillResponses, GetAgentData, GetAgentErrors, GetAgentResponses, GetHealthV0Data, GetHealthV0Errors, GetHealthV0Responses, GetLatestAgentData, GetLatestAgentErrors, GetLatestAgentResponses, GetLatestDeploymentData, GetLatestDeploymentErrors, GetLatestDeploymentResponses, GetLatestMcpserverData, GetLatestMcpserverErrors, GetLatestMcpserverResponses, GetLatestModelData, GetLatestModelErrors, GetLatestModelResponses, GetLatestPluginData, GetLatestPluginErrors, GetLatestPluginResponses, GetLatestPromptData, GetLatestPromptErrors, GetLatestPromptResponses, GetLatestRuntimeData, GetLatestRuntimeErrors, GetLatestRuntimeResponses, GetLatestSecretData, GetLatestSecretErrors, GetLatestSecretResponses, GetLatestSkillData, GetLatestSkillErrors, GetLatestSkillResponses, GetMcpserverData, GetMcpserverErrors, GetMcpserverResponses, GetModelData, GetModelErrors, GetModelResponses, GetPluginData, GetPluginErrors, GetPluginResponses, GetPromptData, GetPromptErrors, GetPromptResponses, GetSkillData, GetSkillErrors, GetSkillResponses, GetVersionV0Data, GetVersionV0Errors, GetVersionV0Responses, ListAgentsData, ListAgentsErrors, ListAgentsResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListMcpserversData, ListMcpserversErrors, ListMcpserversResponses, ListModelsData, ListModelsErrors, ListModelsResponses, ListPluginsData, ListPluginsErrors, ListPluginsResponses, ListPromptsData, ListPromptsErrors, ListPromptsResponses, ListRuntimesData, ListRuntimesErrors, ListRuntimesResponses, ListSecretsData, ListSecretsErrors, ListSecretsResponses, ListSkillsData, ListSkillsErrors, ListSkillsResponses, ListTagsAgentData, ListTagsAgentErrors, ListTagsAgentResponses, ListTagsMcpserverData, ListTagsMcpserverErrors, ListTagsMcpserverResponses, ListTagsModelData, ListTagsModelErrors, ListTagsModelResponses, ListTagsPluginData, ListTagsPluginErrors, ListTagsPluginResponses, ListTagsPromptData, ListTagsPromptErrors, ListTagsPromptResponses, ListTagsSkillData, ListTagsSkillErrors, ListTagsSkillResponses, McpRegistryGetServerVersionData, McpRegistryGetServerVersionErrors, McpRegistryGetServerVersionResponses, McpRegistryListServersData, McpRegistryListServersErrors, McpRegistryListServersResponses, McpRegistryListServerVersionsData, McpRegistryListServerVersionsErrors, McpRegistryListServerVersionsResponses, PingV0Data, PingV0Errors, PingV0Responses, PluginMarketplaceGetData, PluginMarketplaceGetErrors, PluginMarketplaceGetResponses } from './types.gen';
+import type { ApplyBatchData, ApplyBatchErrors, ApplyBatchResponses, ApplyDeploymentData, ApplyDeploymentErrors, ApplyDeploymentResponses, ApplyRuntimeData, ApplyRuntimeErrors, ApplyRuntimeResponses, ApplySecretData, ApplySecretErrors, ApplySecretResponses, DeleteAgentData, DeleteAgentErrors, DeleteAgentResponses, DeleteBatchData, DeleteBatchErrors, DeleteBatchResponses, DeleteDeploymentData, DeleteDeploymentErrors, DeleteDeploymentResponses, DeleteMcpserverData, DeleteMcpserverErrors, DeleteMcpserverResponses, DeleteModelData, DeleteModelErrors, DeleteModelResponses, DeletePluginData, DeletePluginErrors, DeletePluginResponses, DeletePromptData, DeletePromptErrors, DeletePromptResponses, DeleteRuntimeData, DeleteRuntimeErrors, DeleteRuntimeResponses, DeleteSecretData, DeleteSecretErrors, DeleteSecretResponses, DeleteSkillData, DeleteSkillErrors, DeleteSkillResponses, GetAgentData, GetAgentErrors, GetAgentResponses, GetApiGovernanceAuditData, GetApiGovernanceAuditErrors, GetApiGovernanceAuditResponses, GetApiGovernanceMeData, GetApiGovernanceMeErrors, GetApiGovernanceMeResponses, GetApiGovernanceModeData, GetApiGovernanceModeErrors, GetApiGovernanceModeResponses, GetApiGovernanceRecordsByIdData, GetApiGovernanceRecordsByIdErrors, GetApiGovernanceRecordsByIdResponses, GetApiGovernanceRecordsData, GetApiGovernanceRecordsErrors, GetApiGovernanceRecordsResponses, GetHealthV0Data, GetHealthV0Errors, GetHealthV0Responses, GetLatestAgentData, GetLatestAgentErrors, GetLatestAgentResponses, GetLatestDeploymentData, GetLatestDeploymentErrors, GetLatestDeploymentResponses, GetLatestMcpserverData, GetLatestMcpserverErrors, GetLatestMcpserverResponses, GetLatestModelData, GetLatestModelErrors, GetLatestModelResponses, GetLatestPluginData, GetLatestPluginErrors, GetLatestPluginResponses, GetLatestPromptData, GetLatestPromptErrors, GetLatestPromptResponses, GetLatestRuntimeData, GetLatestRuntimeErrors, GetLatestRuntimeResponses, GetLatestSecretData, GetLatestSecretErrors, GetLatestSecretResponses, GetLatestSkillData, GetLatestSkillErrors, GetLatestSkillResponses, GetMcpserverData, GetMcpserverErrors, GetMcpserverResponses, GetModelData, GetModelErrors, GetModelResponses, GetPluginData, GetPluginErrors, GetPluginResponses, GetPromptData, GetPromptErrors, GetPromptResponses, GetSkillData, GetSkillErrors, GetSkillResponses, GetVersionV0Data, GetVersionV0Errors, GetVersionV0Responses, ListAgentsData, ListAgentsErrors, ListAgentsResponses, ListApiGovernanceAccountsData, ListApiGovernanceAccountsErrors, ListApiGovernanceAccountsResponses, ListApiGovernanceAuditCsvData, ListApiGovernanceAuditCsvErrors, ListApiGovernanceAuditCsvResponses, ListDeploymentsData, ListDeploymentsErrors, ListDeploymentsResponses, ListMcpserversData, ListMcpserversErrors, ListMcpserversResponses, ListModelsData, ListModelsErrors, ListModelsResponses, ListPluginsData, ListPluginsErrors, ListPluginsResponses, ListPromptsData, ListPromptsErrors, ListPromptsResponses, ListRuntimesData, ListRuntimesErrors, ListRuntimesResponses, ListSecretsData, ListSecretsErrors, ListSecretsResponses, ListSkillsData, ListSkillsErrors, ListSkillsResponses, ListTagsAgentData, ListTagsAgentErrors, ListTagsAgentResponses, ListTagsMcpserverData, ListTagsMcpserverErrors, ListTagsMcpserverResponses, ListTagsModelData, ListTagsModelErrors, ListTagsModelResponses, ListTagsPluginData, ListTagsPluginErrors, ListTagsPluginResponses, ListTagsPromptData, ListTagsPromptErrors, ListTagsPromptResponses, ListTagsSkillData, ListTagsSkillErrors, ListTagsSkillResponses, McpRegistryGetServerVersionData, McpRegistryGetServerVersionErrors, McpRegistryGetServerVersionResponses, McpRegistryListServersData, McpRegistryListServersErrors, McpRegistryListServersResponses, McpRegistryListServerVersionsData, McpRegistryListServerVersionsErrors, McpRegistryListServerVersionsResponses, PingV0Data, PingV0Errors, PingV0Responses, PluginMarketplaceGetData, PluginMarketplaceGetErrors, PluginMarketplaceGetResponses, PostApiGovernanceAccountsByIdRolesData, PostApiGovernanceAccountsByIdRolesErrors, PostApiGovernanceAccountsByIdRolesResponses, PostApiGovernanceCommandsData, PostApiGovernanceCommandsErrors, PostApiGovernanceCommandsResponses, PostApiGovernanceLoginData, PostApiGovernanceLoginErrors, PostApiGovernanceLoginResponses, PostApiGovernanceLogoutData, PostApiGovernanceLogoutErrors, PostApiGovernanceLogoutResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -17,6 +17,82 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
      */
     meta?: Record<string, unknown>;
 };
+
+/**
+ * List API governance accounts
+ */
+export const listApiGovernanceAccounts = <ThrowOnError extends boolean = false>(options?: Options<ListApiGovernanceAccountsData, ThrowOnError>) => (options?.client ?? client).get<ListApiGovernanceAccountsResponses, ListApiGovernanceAccountsErrors, ThrowOnError>({ url: '/api/governance/accounts', ...options });
+
+/**
+ * Post API governance accounts by ID roles
+ */
+export const postApiGovernanceAccountsByIdRoles = <ThrowOnError extends boolean = false>(options: Options<PostApiGovernanceAccountsByIdRolesData, ThrowOnError>) => (options.client ?? client).post<PostApiGovernanceAccountsByIdRolesResponses, PostApiGovernanceAccountsByIdRolesErrors, ThrowOnError>({
+    url: '/api/governance/accounts/{id}/roles',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get API governance audit
+ */
+export const getApiGovernanceAudit = <ThrowOnError extends boolean = false>(options?: Options<GetApiGovernanceAuditData, ThrowOnError>) => (options?.client ?? client).get<GetApiGovernanceAuditResponses, GetApiGovernanceAuditErrors, ThrowOnError>({ url: '/api/governance/audit', ...options });
+
+/**
+ * List API governance audit csv
+ */
+export const listApiGovernanceAuditCsv = <ThrowOnError extends boolean = false>(options?: Options<ListApiGovernanceAuditCsvData, ThrowOnError>) => (options?.client ?? client).get<ListApiGovernanceAuditCsvResponses, ListApiGovernanceAuditCsvErrors, ThrowOnError>({ url: '/api/governance/audit.csv', ...options });
+
+/**
+ * Post API governance commands
+ */
+export const postApiGovernanceCommands = <ThrowOnError extends boolean = false>(options: Options<PostApiGovernanceCommandsData, ThrowOnError>) => (options.client ?? client).post<PostApiGovernanceCommandsResponses, PostApiGovernanceCommandsErrors, ThrowOnError>({
+    url: '/api/governance/commands',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Post API governance login
+ */
+export const postApiGovernanceLogin = <ThrowOnError extends boolean = false>(options: Options<PostApiGovernanceLoginData, ThrowOnError>) => (options.client ?? client).post<PostApiGovernanceLoginResponses, PostApiGovernanceLoginErrors, ThrowOnError>({
+    url: '/api/governance/login',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Post API governance logout
+ */
+export const postApiGovernanceLogout = <ThrowOnError extends boolean = false>(options?: Options<PostApiGovernanceLogoutData, ThrowOnError>) => (options?.client ?? client).post<PostApiGovernanceLogoutResponses, PostApiGovernanceLogoutErrors, ThrowOnError>({ url: '/api/governance/logout', ...options });
+
+/**
+ * Get API governance me
+ */
+export const getApiGovernanceMe = <ThrowOnError extends boolean = false>(options?: Options<GetApiGovernanceMeData, ThrowOnError>) => (options?.client ?? client).get<GetApiGovernanceMeResponses, GetApiGovernanceMeErrors, ThrowOnError>({ url: '/api/governance/me', ...options });
+
+/**
+ * Get API governance mode
+ */
+export const getApiGovernanceMode = <ThrowOnError extends boolean = false>(options?: Options<GetApiGovernanceModeData, ThrowOnError>) => (options?.client ?? client).get<GetApiGovernanceModeResponses, GetApiGovernanceModeErrors, ThrowOnError>({ url: '/api/governance/mode', ...options });
+
+/**
+ * Get API governance records
+ */
+export const getApiGovernanceRecords = <ThrowOnError extends boolean = false>(options?: Options<GetApiGovernanceRecordsData, ThrowOnError>) => (options?.client ?? client).get<GetApiGovernanceRecordsResponses, GetApiGovernanceRecordsErrors, ThrowOnError>({ url: '/api/governance/records', ...options });
+
+/**
+ * Get API governance records by ID
+ */
+export const getApiGovernanceRecordsById = <ThrowOnError extends boolean = false>(options: Options<GetApiGovernanceRecordsByIdData, ThrowOnError>) => (options.client ?? client).get<GetApiGovernanceRecordsByIdResponses, GetApiGovernanceRecordsByIdErrors, ThrowOnError>({ url: '/api/governance/records/{id}', ...options });
 
 /**
  * Get the plugin marketplace (Claude Code marketplace.json compatibility)

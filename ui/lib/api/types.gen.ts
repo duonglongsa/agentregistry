@@ -4,6 +4,14 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type Actor = {
+    department: string;
+    id: string;
+    name: string;
+    revision: number;
+    roles: Array<string> | null;
+};
+
 export type Agent = {
     apiVersion: string;
     kind: string;
@@ -48,6 +56,17 @@ export type ApplyResult = {
 
 export type ApplyResultsResponse = {
     results: Array<ApplyResult> | null;
+};
+
+export type Command = {
+    action: 'create' | 'update' | 'submit' | 'approve' | 'reject' | 'cancel' | 'revoke' | 'suspend' | 'resume' | 'archive';
+    baseVersion: number;
+    data: Payload;
+    id?: string;
+    kind: 'agent' | 'instance' | 'server' | 'tool' | 'request' | 'grant';
+    parent?: string;
+    reason?: string;
+    tool?: string;
 };
 
 export type CommandEntry = {
@@ -161,6 +180,32 @@ export type ErrorModel = {
     type?: string;
 };
 
+export type Event = {
+    action: string;
+    actor: string;
+    afterHash: string;
+    at: string;
+    beforeHash: string;
+    correlation: string;
+    department: string;
+    id: string;
+    object: string;
+    parent: string;
+    reason: string;
+    result: string;
+    revision: number;
+};
+
+export type Events = {
+    items: Array<Event> | null;
+    total: number;
+};
+
+export type GetApiGovernanceModeResponse = {
+    mode: string;
+    notice: string;
+};
+
 export type HttpHeader = {
     name: string;
     value?: string;
@@ -206,6 +251,12 @@ export type HooksField = {
     };
     Path: string;
     Raw: unknown;
+};
+
+export type Identity = {
+    clientReference?: string;
+    issuer?: string;
+    subject?: string;
 };
 
 export type LspServerEntry = {
@@ -285,6 +336,15 @@ export type ListOutputSkillBody = {
 
 export type LocalSecretReference = {
     name: string;
+};
+
+export type LoginInputBody = {
+    id: string;
+    password: string;
+};
+
+export type LoginOutputBody = {
+    status: string;
 };
 
 export type McpArgument = {
@@ -485,9 +545,39 @@ export type Owner = {
     name: string;
 };
 
+export type Page = {
+    items: Array<Record> | null;
+    total: number;
+};
+
 export type PathOrPaths = {
     Values: Array<string> | null;
     WasArray: boolean;
+};
+
+export type Payload = {
+    classification?: string;
+    constraints?: {
+        [key: string]: string;
+    };
+    description?: string;
+    endpoint?: string;
+    environment?: string;
+    expiresAt?: string;
+    identity?: Identity;
+    inputSchema?: unknown;
+    location?: string;
+    name: string;
+    namespace?: string;
+    operations?: Array<string> | null;
+    purpose?: string;
+    registrationScope?: 'internal' | 'outside_mb' | '';
+    requestType?: string;
+    risk?: 'low' | 'medium' | 'high' | '';
+    serverReference?: string;
+    snapshot?: string;
+    tag?: string;
+    targetHash?: string;
 };
 
 export type PingBody = {
@@ -632,6 +722,11 @@ export type PluginUserConfigField = {
     type: string;
 };
 
+export type PostApiGovernanceAccountsByIdRolesRequest = {
+    baseVersion: number;
+    roles: Array<string> | null;
+};
+
 export type Prompt = {
     apiVersion: string;
     kind: string;
@@ -644,6 +739,27 @@ export type PromptSpec = {
     content?: string;
     description?: string;
     iconUrl?: string;
+};
+
+export type Record = {
+    createdAt: string;
+    data: Payload;
+    decidedAt?: string;
+    decisionBy?: string;
+    department: string;
+    hash: string;
+    id: string;
+    kind: string;
+    owner: string;
+    parent?: string;
+    reason?: string;
+    revokedAt?: string;
+    revokedBy?: string;
+    source?: string;
+    state: string;
+    tool?: string;
+    updatedAt: string;
+    version: number;
 };
 
 export type Repository = {
@@ -812,6 +928,318 @@ export type VersionBody = {
      */
     version: string;
 };
+
+export type ListApiGovernanceAccountsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/governance/accounts';
+};
+
+export type ListApiGovernanceAccountsErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type ListApiGovernanceAccountsError = ListApiGovernanceAccountsErrors[keyof ListApiGovernanceAccountsErrors];
+
+export type ListApiGovernanceAccountsResponses = {
+    /**
+     * OK
+     */
+    200: Array<Actor> | null;
+};
+
+export type ListApiGovernanceAccountsResponse = ListApiGovernanceAccountsResponses[keyof ListApiGovernanceAccountsResponses];
+
+export type PostApiGovernanceAccountsByIdRolesData = {
+    body: PostApiGovernanceAccountsByIdRolesRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/governance/accounts/{id}/roles';
+};
+
+export type PostApiGovernanceAccountsByIdRolesErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type PostApiGovernanceAccountsByIdRolesError = PostApiGovernanceAccountsByIdRolesErrors[keyof PostApiGovernanceAccountsByIdRolesErrors];
+
+export type PostApiGovernanceAccountsByIdRolesResponses = {
+    /**
+     * OK
+     */
+    200: Actor;
+};
+
+export type PostApiGovernanceAccountsByIdRolesResponse = PostApiGovernanceAccountsByIdRolesResponses[keyof PostApiGovernanceAccountsByIdRolesResponses];
+
+export type GetApiGovernanceAuditData = {
+    body?: never;
+    path?: never;
+    query?: {
+        kind?: string;
+        parent?: string;
+        actor?: string;
+        action?: string;
+        state?: string;
+        search?: string;
+        from?: string;
+        until?: string;
+        offset?: number;
+        limit?: number;
+    };
+    url: '/api/governance/audit';
+};
+
+export type GetApiGovernanceAuditErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetApiGovernanceAuditError = GetApiGovernanceAuditErrors[keyof GetApiGovernanceAuditErrors];
+
+export type GetApiGovernanceAuditResponses = {
+    /**
+     * OK
+     */
+    200: Events;
+};
+
+export type GetApiGovernanceAuditResponse = GetApiGovernanceAuditResponses[keyof GetApiGovernanceAuditResponses];
+
+export type ListApiGovernanceAuditCsvData = {
+    body?: never;
+    path?: never;
+    query?: {
+        kind?: string;
+        parent?: string;
+        actor?: string;
+        action?: string;
+        state?: string;
+        search?: string;
+        from?: string;
+        until?: string;
+        offset?: number;
+        limit?: number;
+    };
+    url: '/api/governance/audit.csv';
+};
+
+export type ListApiGovernanceAuditCsvErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type ListApiGovernanceAuditCsvError = ListApiGovernanceAuditCsvErrors[keyof ListApiGovernanceAuditCsvErrors];
+
+export type ListApiGovernanceAuditCsvResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type ListApiGovernanceAuditCsvResponse = ListApiGovernanceAuditCsvResponses[keyof ListApiGovernanceAuditCsvResponses];
+
+export type PostApiGovernanceCommandsData = {
+    body: Command;
+    path?: never;
+    query?: never;
+    url: '/api/governance/commands';
+};
+
+export type PostApiGovernanceCommandsErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type PostApiGovernanceCommandsError = PostApiGovernanceCommandsErrors[keyof PostApiGovernanceCommandsErrors];
+
+export type PostApiGovernanceCommandsResponses = {
+    /**
+     * OK
+     */
+    200: Record;
+};
+
+export type PostApiGovernanceCommandsResponse = PostApiGovernanceCommandsResponses[keyof PostApiGovernanceCommandsResponses];
+
+export type PostApiGovernanceLoginData = {
+    body: LoginInputBody;
+    path?: never;
+    query?: never;
+    url: '/api/governance/login';
+};
+
+export type PostApiGovernanceLoginErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type PostApiGovernanceLoginError = PostApiGovernanceLoginErrors[keyof PostApiGovernanceLoginErrors];
+
+export type PostApiGovernanceLoginResponses = {
+    /**
+     * OK
+     */
+    200: LoginOutputBody;
+};
+
+export type PostApiGovernanceLoginResponse = PostApiGovernanceLoginResponses[keyof PostApiGovernanceLoginResponses];
+
+export type PostApiGovernanceLogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/governance/logout';
+};
+
+export type PostApiGovernanceLogoutErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type PostApiGovernanceLogoutError = PostApiGovernanceLogoutErrors[keyof PostApiGovernanceLogoutErrors];
+
+export type PostApiGovernanceLogoutResponses = {
+    /**
+     * OK
+     */
+    200: LoginOutputBody;
+};
+
+export type PostApiGovernanceLogoutResponse = PostApiGovernanceLogoutResponses[keyof PostApiGovernanceLogoutResponses];
+
+export type GetApiGovernanceMeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/governance/me';
+};
+
+export type GetApiGovernanceMeErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetApiGovernanceMeError = GetApiGovernanceMeErrors[keyof GetApiGovernanceMeErrors];
+
+export type GetApiGovernanceMeResponses = {
+    /**
+     * OK
+     */
+    200: Actor;
+};
+
+export type GetApiGovernanceMeResponse = GetApiGovernanceMeResponses[keyof GetApiGovernanceMeResponses];
+
+export type GetApiGovernanceModeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/governance/mode';
+};
+
+export type GetApiGovernanceModeErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetApiGovernanceModeError = GetApiGovernanceModeErrors[keyof GetApiGovernanceModeErrors];
+
+export type GetApiGovernanceModeResponses = {
+    /**
+     * OK
+     */
+    200: GetApiGovernanceModeResponse;
+};
+
+export type GetApiGovernanceModeResponse2 = GetApiGovernanceModeResponses[keyof GetApiGovernanceModeResponses];
+
+export type GetApiGovernanceRecordsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        kind?: string;
+        parent?: string;
+        actor?: string;
+        action?: string;
+        state?: string;
+        search?: string;
+        from?: string;
+        until?: string;
+        offset?: number;
+        limit?: number;
+    };
+    url: '/api/governance/records';
+};
+
+export type GetApiGovernanceRecordsErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetApiGovernanceRecordsError = GetApiGovernanceRecordsErrors[keyof GetApiGovernanceRecordsErrors];
+
+export type GetApiGovernanceRecordsResponses = {
+    /**
+     * OK
+     */
+    200: Page;
+};
+
+export type GetApiGovernanceRecordsResponse = GetApiGovernanceRecordsResponses[keyof GetApiGovernanceRecordsResponses];
+
+export type GetApiGovernanceRecordsByIdData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/governance/records/{id}';
+};
+
+export type GetApiGovernanceRecordsByIdErrors = {
+    /**
+     * Error
+     */
+    default: ErrorModel;
+};
+
+export type GetApiGovernanceRecordsByIdError = GetApiGovernanceRecordsByIdErrors[keyof GetApiGovernanceRecordsByIdErrors];
+
+export type GetApiGovernanceRecordsByIdResponses = {
+    /**
+     * OK
+     */
+    200: Record;
+};
+
+export type GetApiGovernanceRecordsByIdResponse = GetApiGovernanceRecordsByIdResponses[keyof GetApiGovernanceRecordsByIdResponses];
 
 export type PluginMarketplaceGetData = {
     body?: never;

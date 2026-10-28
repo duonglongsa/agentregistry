@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -32,6 +33,7 @@ import { AddSkillDialog } from "@/components/add-skill-dialog"
 import { AddAgentDialog } from "@/components/add-agent-dialog"
 import { AddPromptDialog } from "@/components/add-prompt-dialog"
 import { DeployDialog } from "@/components/deploy-dialog"
+import { GovernanceCatalog } from "@/components/governance/catalog-view"
 import { listServersV0, listSkillsV0, listAgentsV0, listPromptsV0, ServerResponse, SkillResponse, AgentResponse, PromptResponse } from "@/lib/admin-api"
 import MCPIcon from "@/components/icons/mcp"
 import {
@@ -72,13 +74,35 @@ interface GroupedAgent extends AgentResponse {
 type TabKey = "servers" | "skills" | "agents" | "prompts"
 
 const TAB_CONFIG: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-  { key: "servers", label: "Servers", icon: <MCPIcon /> },
+  { key: "servers", label: "MCP Server", icon: <MCPIcon /> },
   { key: "skills", label: "Skills", icon: <Zap className="h-3.5 w-3.5" /> },
   { key: "agents", label: "Agents", icon: <Bot className="h-3.5 w-3.5" /> },
   { key: "prompts", label: "Prompts", icon: <FileText className="h-3.5 w-3.5" /> },
 ]
 
-export default function AdminPage() {
+export default function CatalogPage() {
+  const [mode, setMode] = useState<"checking" | "governance" | "public" | "login" | "error">("checking")
+  useEffect(() => {
+    let current = true
+    fetch("/api/governance/mode", { credentials: "same-origin" }).then(async response => {
+      if (!current) return
+      if (response.ok) {
+        const data = await response.json().catch(() => null)
+        setMode(data?.mode === "local_governance_demo" ? "governance" : "public")
+      }
+      else if (response.status === 401) setMode("login")
+      else if (response.status === 404) setMode("public")
+      else setMode("error")
+    }).catch(() => { if (current) setMode("error") })
+    return () => { current = false }
+  }, [])
+  if (mode === "checking") return <main className="container mx-auto px-6 py-10" role="status">Đang kiểm tra chế độ Danh mục…</main>
+  if (mode === "login") return <main className="container mx-auto px-6 py-10"><h1 className="text-xl font-semibold">Đăng nhập để xem Danh mục</h1><p className="mt-2 text-muted-foreground">Danh mục Governance được giới hạn theo đơn vị của bạn.</p><Link href="/login" className={`${buttonVariants()} mt-4`}>Đăng nhập</Link></main>
+  if (mode === "error") return <main className="container mx-auto px-6 py-10" role="alert">Không thể xác định chế độ Danh mục. Hãy kiểm tra kết nối backend và tải lại trang.</main>
+  return mode === "governance" ? <GovernanceCatalog /> : <PublicCatalog />
+}
+
+function PublicCatalog() {
   const [activeTab, setActiveTab] = useState<TabKey>("servers")
   const [servers, setServers] = useState<ServerResponse[]>([])
   const [groupedServers, setGroupedServers] = useState<GroupedServer[]>([])
@@ -301,7 +325,7 @@ export default function AdminPage() {
       const grouped = groupServersByName(allServers)
       setGroupedServers(grouped)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch data")
+      setError(err instanceof Error ? err.message : "Không thể tải dữ liệu")
     } finally {
       setLoading(false)
     }
@@ -406,7 +430,7 @@ export default function AdminPage() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center space-y-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading registry...</p>
+          <p className="text-sm text-muted-foreground">Đang tải Registry...</p>
         </div>
       </div>
     )
@@ -416,9 +440,9 @@ export default function AdminPage() {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center space-y-3">
-          <p className="text-lg font-semibold">Failed to load registry</p>
+          <p className="text-lg font-semibold">Không thể tải Registry</p>
           <p className="text-sm text-muted-foreground max-w-md">{error}</p>
-          <Button onClick={fetchData} size="sm">Retry</Button>
+          <Button onClick={fetchData} size="sm">Thử lại</Button>
         </div>
       </div>
     )
@@ -465,7 +489,7 @@ export default function AdminPage() {
               <DropdownMenuTrigger asChild>
                 <Button size="sm" className="gap-1.5 h-8">
                   <Plus className="h-3.5 w-3.5" />
-                  Add
+                  Thêm
                   <ChevronDown className="h-3 w-3 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
@@ -489,7 +513,7 @@ export default function AdminPage() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={fetchData} title="Refresh">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={fetchData} title="Làm mới">
               <RefreshCw className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -500,7 +524,7 @@ export default function AdminPage() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <Input
-              placeholder={`Search ${activeTab}...`}
+              placeholder={`Tìm kiếm ${TAB_CONFIG.find(tab => tab.key === activeTab)?.label}...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 h-10 text-[15px]"
@@ -516,9 +540,9 @@ export default function AdminPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="name">Tên</SelectItem>
                     <SelectItem value="stars">Stars</SelectItem>
-                    <SelectItem value="date">Published</SelectItem>
+                    <SelectItem value="date">Ngày xuất bản</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -532,7 +556,7 @@ export default function AdminPage() {
                     className="h-3.5 w-3.5"
                   />
                   <Label htmlFor="filter-verified-org" className="text-xs cursor-pointer text-muted-foreground">
-                    Verified Org
+                    Đơn vị đã xác minh
                   </Label>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -543,7 +567,7 @@ export default function AdminPage() {
                     className="h-3.5 w-3.5"
                   />
                   <Label htmlFor="filter-verified-publisher" className="text-xs cursor-pointer text-muted-foreground">
-                    Verified Publisher
+                    Publisher đã xác minh
                   </Label>
                 </div>
               </div>
@@ -557,11 +581,11 @@ export default function AdminPage() {
             filteredServers.length === 0 ? (
               <EmptyState
                 icon={<span className="h-8 w-8 flex items-center justify-center text-muted-foreground"><MCPIcon /></span>}
-                title={groupedServers.length === 0 ? "No servers in registry" : "No servers match your filters"}
-                description={groupedServers.length === 0 ? "Add servers to get started" : "Try adjusting your search or filter criteria"}
+                title={groupedServers.length === 0 ? "Chưa có MCP Server trong Registry" : "Không có MCP Server phù hợp với bộ lọc"}
+                description={groupedServers.length === 0 ? "Thêm MCP Server để bắt đầu" : "Hãy điều chỉnh nội dung tìm kiếm hoặc bộ lọc"}
                 action={groupedServers.length === 0 ? (
                   <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddServerDialogOpen(true)}>
-                    <Plus className="h-3.5 w-3.5" /> Add Server
+                    <Plus className="h-3.5 w-3.5" /> Thêm MCP Server
                   </Button>
                 ) : undefined}
               />
@@ -585,11 +609,11 @@ export default function AdminPage() {
             filteredSkills.length === 0 ? (
               <EmptyState
                 icon={<Zap className="h-8 w-8 text-muted-foreground" />}
-                title={groupedSkills.length === 0 ? "No skills in registry" : "No skills match your filters"}
-                description={groupedSkills.length === 0 ? "Publish skills to get started" : "Try adjusting your search"}
+                title={groupedSkills.length === 0 ? "Chưa có Skill trong Registry" : "Không có Skill phù hợp với bộ lọc"}
+                description={groupedSkills.length === 0 ? "Xuất bản Skill để bắt đầu" : "Hãy điều chỉnh nội dung tìm kiếm"}
                 action={groupedSkills.length === 0 ? (
                   <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddSkillDialogOpen(true)}>
-                    <Plus className="h-3.5 w-3.5" /> Add Skill
+                    <Plus className="h-3.5 w-3.5" /> Thêm Skill
                   </Button>
                 ) : undefined}
               />
@@ -611,11 +635,11 @@ export default function AdminPage() {
             filteredAgents.length === 0 ? (
               <EmptyState
                 icon={<Bot className="h-8 w-8 text-muted-foreground" />}
-                title={groupedAgents.length === 0 ? "No agents in registry" : "No agents match your filters"}
-                description={groupedAgents.length === 0 ? "Create agents to get started" : "Try adjusting your search"}
+                title={groupedAgents.length === 0 ? "Chưa có Agent trong Registry" : "Không có Agent phù hợp với bộ lọc"}
+                description={groupedAgents.length === 0 ? "Tạo Agent để bắt đầu" : "Hãy điều chỉnh nội dung tìm kiếm"}
                 action={groupedAgents.length === 0 ? (
                   <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddAgentDialogOpen(true)}>
-                    <Plus className="h-3.5 w-3.5" /> Add Agent
+                    <Plus className="h-3.5 w-3.5" /> Thêm Agent
                   </Button>
                 ) : undefined}
               />
@@ -639,11 +663,11 @@ export default function AdminPage() {
             filteredPrompts.length === 0 ? (
               <EmptyState
                 icon={<FileText className="h-8 w-8 text-muted-foreground" />}
-                title={groupedPrompts.length === 0 ? "No prompts in registry" : "No prompts match your filters"}
-                description={groupedPrompts.length === 0 ? "Add prompts to get started" : "Try adjusting your search"}
+                title={groupedPrompts.length === 0 ? "Chưa có Prompt trong Registry" : "Không có Prompt phù hợp với bộ lọc"}
+                description={groupedPrompts.length === 0 ? "Thêm Prompt để bắt đầu" : "Hãy điều chỉnh nội dung tìm kiếm"}
                 action={groupedPrompts.length === 0 ? (
                   <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddPromptDialogOpen(true)}>
-                    <Plus className="h-3.5 w-3.5" /> Add Prompt
+                    <Plus className="h-3.5 w-3.5" /> Thêm Prompt
                   </Button>
                 ) : undefined}
               />
@@ -689,7 +713,7 @@ export default function AdminPage() {
             {selectedServer ? (selectedServer.server.title || selectedServer.server.name) :
              selectedAgent ? selectedAgent.agent.name :
              selectedSkill ? (selectedSkill.skill.title || selectedSkill.skill.name) :
-             selectedPrompt ? selectedPrompt.prompt.name : 'Details'}
+             selectedPrompt ? selectedPrompt.prompt.name : 'Chi tiết'}
           </SheetTitle>
           {selectedServer && (
             <ServerDetail

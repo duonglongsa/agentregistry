@@ -12,9 +12,6 @@ const mockServer: ServerResponse = {
     description: "MCP server for PostgreSQL with connection pooling.",
     tag: "3.2.1",
     source: {
-      repository: {
-        url: "https://github.com/acme/database-server",
-      },
       package: {
         origin: {
           type: "npm",

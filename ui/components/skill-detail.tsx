@@ -112,13 +112,13 @@ export function SkillDetail({ skill, allTags: allTagsProp }: SkillDetailProps) {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="raw">Raw</TabsTrigger>
+            <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+            <TabsTrigger value="raw">Dữ liệu thô</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             <section>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Description</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Mô tả</h3>
               <p className="text-[15px] leading-relaxed">{skillData.description}</p>
             </section>
 
@@ -154,7 +154,7 @@ export function SkillDetail({ skill, allTags: allTagsProp }: SkillDetailProps) {
                   Raw JSON
                 </h3>
                 <Button variant="outline" size="sm" onClick={handleCopyJson} className="gap-1.5 h-7 text-xs">
-                  {jsonCopied ? <><Check className="h-3 w-3" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
+                  {jsonCopied ? <><Check className="h-3 w-3" /> Đã sao chép</> : <><Copy className="h-3 w-3" /> Sao chép</>}
                 </Button>
               </div>
               <pre className="bg-muted p-3 rounded-md overflow-x-auto text-xs leading-relaxed">

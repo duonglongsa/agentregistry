@@ -169,9 +169,9 @@ export function AddServerDialog({ open, onOpenChange, onServerAdded }: AddServer
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto px-8">
         <DialogHeader>
-          <DialogTitle>Add New MCP Server</DialogTitle>
+          <DialogTitle>Thêm MCP Server mới</DialogTitle>
           <DialogDescription>
-            Manually add a new MCP server to your registry
+            Thêm thủ công một MCP Server mới vào Registry
           </DialogDescription>
         </DialogHeader>
 
@@ -179,7 +179,7 @@ export function AddServerDialog({ open, onOpenChange, onServerAdded }: AddServer
           {/* Basic Information */}
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Server Name *</Label>
+              <Label htmlFor="name">Tên Server *</Label>
               <Input
                 id="name"
                 placeholder="my-server"
@@ -195,7 +195,7 @@ export function AddServerDialog({ open, onOpenChange, onServerAdded }: AddServer
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="title">Display Title</Label>
+              <Label htmlFor="title">Tiêu đề hiển thị</Label>
               <Input
                 id="title"
                 placeholder="My Server"
@@ -218,7 +218,7 @@ export function AddServerDialog({ open, onOpenChange, onServerAdded }: AddServer
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
+            <Label htmlFor="description">Mô tả *</Label>
             <Textarea
               id="description"
               placeholder="Describe what this server does..."

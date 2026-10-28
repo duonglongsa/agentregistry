@@ -42,7 +42,7 @@ export function DeleteConfirmationDialog({
           <DialogDescription className="text-base">
             {description || `Are you sure you want to remove "${itemName}" from the registry?`}
             <br />
-            <span className="text-destructive font-medium">This action cannot be undone.</span>
+            <span className="text-destructive font-medium">Không thể hoàn tác thao tác này.</span>
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center justify-end gap-2 mt-6">
@@ -58,7 +58,7 @@ export function DeleteConfirmationDialog({
             onClick={onConfirm}
             disabled={isDeleting}
           >
-            {isDeleting ? "Removing..." : "Remove"}
+            {isDeleting ? "Đang gỡ..." : "Gỡ"}
           </Button>
         </div>
       </DialogContent>

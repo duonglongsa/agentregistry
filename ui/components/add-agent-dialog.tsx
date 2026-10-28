@@ -17,7 +17,7 @@ export function AddAgentDialog({ open, onOpenChange }: AddAgentDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Agent</DialogTitle>
+          <DialogTitle>Thêm Agent</DialogTitle>
           <DialogDescription>
             Add a new agent to the registry
           </DialogDescription>
@@ -25,7 +25,7 @@ export function AddAgentDialog({ open, onOpenChange }: AddAgentDialogProps) {
 
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Agent Name</Label>
+            <Label htmlFor="name">Tên Agent</Label>
             <Input
               id="name"
               placeholder="my-agent"
@@ -34,7 +34,7 @@ export function AddAgentDialog({ open, onOpenChange }: AddAgentDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Tiêu đề</Label>
             <Input
               id="title"
               placeholder="My Agent"
@@ -43,7 +43,7 @@ export function AddAgentDialog({ open, onOpenChange }: AddAgentDialogProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Mô tả</Label>
             <Textarea
               id="description"
               placeholder="A description of what this agent does"
@@ -70,7 +70,7 @@ export function AddAgentDialog({ open, onOpenChange }: AddAgentDialogProps) {
               Cancel
             </Button>
             <Button disabled>
-              Add Agent
+              Thêm Agent
             </Button>
           </div>
         </div>

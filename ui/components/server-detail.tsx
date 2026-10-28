@@ -98,7 +98,7 @@ export function ServerDetail({ server, onServerCopied }: ServerDetailProps) {
                     <TooltipTrigger asChild>
                       <ShieldCheck className="h-5 w-5 text-blue-500 flex-shrink-0" />
                     </TooltipTrigger>
-                    <TooltipContent><p>Verified Organization</p></TooltipContent>
+                    <TooltipContent><p>Đơn vị đã xác minh</p></TooltipContent>
                   </Tooltip>
                 )}
                 {identityData?.publisher_identity_verified_by_jwt && (
@@ -106,7 +106,7 @@ export function ServerDetail({ server, onServerCopied }: ServerDetailProps) {
                     <TooltipTrigger asChild>
                       <BadgeCheck className="h-5 w-5 text-green-500 flex-shrink-0" />
                     </TooltipTrigger>
-                    <TooltipContent><p>Verified Publisher</p></TooltipContent>
+                    <TooltipContent><p>Publisher đã xác minh</p></TooltipContent>
                   </Tooltip>
                 )}
               </div>
@@ -154,23 +154,23 @@ export function ServerDetail({ server, onServerCopied }: ServerDetailProps) {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="overview">Tổng quan</TabsTrigger>
               {serverData.source?.package && (
                 <TabsTrigger value="packages">Package</TabsTrigger>
               )}
-              <TabsTrigger value="raw">Raw</TabsTrigger>
+              <TabsTrigger value="raw">Dữ liệu thô</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
               <section>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Description</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Mô tả</h3>
                 <p className="text-[15px] leading-relaxed">{serverData.description}</p>
               </section>
 
               {/* Repo stats */}
               {(githubStars !== undefined || repoData) && (
                 <section>
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">Repository Stats</h3>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">Thống kê Repository</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {githubStars !== undefined && (
                       <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50">
@@ -217,7 +217,7 @@ export function ServerDetail({ server, onServerCopied }: ServerDetailProps) {
               {(() => {
                 const pkg = serverData.source?.package
                 if (!pkg) {
-                  return <p className="text-center text-sm text-muted-foreground py-8">No package defined</p>
+                  return <p className="text-center text-sm text-muted-foreground py-8">Chưa khai báo package</p>
                 }
                 const origin = pkg.origin
                 const identifier = origin?.identifier
@@ -287,7 +287,7 @@ export function ServerDetail({ server, onServerCopied }: ServerDetailProps) {
                     Raw JSON
                   </h3>
                   <Button variant="outline" size="sm" onClick={handleCopyJson} className="gap-1.5 h-7 text-xs">
-                    {jsonCopied ? <><Check className="h-3 w-3" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
+                    {jsonCopied ? <><Check className="h-3 w-3" /> Đã sao chép</> : <><Copy className="h-3 w-3" /> Sao chép</>}
                   </Button>
                 </div>
                 <pre className="bg-muted p-3 rounded-md overflow-x-auto text-xs leading-relaxed">

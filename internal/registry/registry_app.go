@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"maps"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"slices"
@@ -32,6 +33,8 @@ import (
 	"github.com/agentregistry-dev/agentregistry/internal/registry/config"
 	controller "github.com/agentregistry-dev/agentregistry/internal/registry/controller"
 	internaldb "github.com/agentregistry-dev/agentregistry/internal/registry/database"
+	govdb "github.com/agentregistry-dev/agentregistry/internal/registry/database/governance"
+	gov "github.com/agentregistry-dev/agentregistry/internal/registry/governance"
 	"github.com/agentregistry-dev/agentregistry/internal/registry/plugins/bundle"
 	microsoftruntime "github.com/agentregistry-dev/agentregistry/internal/registry/runtimes/microsoft"
 	deploymentsvc "github.com/agentregistry-dev/agentregistry/internal/registry/service/deployment"
@@ -62,6 +65,30 @@ func App(ctx context.Context, opts ...types.AppOptions) error {
 		return fmt.Errorf("configuration validation failed: %w", err)
 	}
 
+	if flag := os.Getenv("AGENT_REGISTRY_GOVERNANCE_ENABLED"); flag != "" && flag != "true" && flag != "false" {
+		return fmt.Errorf("AGENT_REGISTRY_GOVERNANCE_ENABLED must be true or false")
+	}
+	var governanceAuth *gov.LocalAuth
+	if os.Getenv("AGENT_REGISTRY_GOVERNANCE_ENABLED") == "true" {
+		dsn, err := url.Parse(cfg.DatabaseURL)
+		if err != nil || !(dsn.Hostname() == "127.0.0.1" || dsn.Hostname() == "localhost") || !strings.HasSuffix(dsn.Path, "_governance_demo") {
+			return fmt.Errorf("local governance demo requires a loopback database named *_governance_demo")
+		}
+		if cfg.SecretStore != "" || options.SecretStore != nil || options.DatabaseFactory != nil {
+			return fmt.Errorf("local governance demo does not support external secret stores or database factories")
+		}
+		governanceAuth, err = gov.LoadLocalAuth(cfg.ServerAddress)
+		if err != nil {
+			return fmt.Errorf("governance authentication: %w", err)
+		}
+		if options.AuthnProvider != nil || options.HTTPServerFactory != nil || options.OnHTTPServerCreated != nil {
+			return fmt.Errorf("local governance demo cannot combine custom auth or HTTP server hooks")
+		}
+		// Disable alternate network surfaces and runtime discovery in this mode.
+		cfg.MCPPort = 0
+		cfg.MCPRegistryCompatEnabled = false
+		cfg.PluginMarketplaceCompatEnabled = false
+	}
 	// Create a context with timeout for PostgreSQL connection
 	dbCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
@@ -74,6 +101,9 @@ func App(ctx context.Context, opts ...types.AppOptions) error {
 
 	// Resolve authz provider: use provided, or default to public authz
 	authzProvider := options.AuthzProvider
+	if governanceAuth != nil {
+		authzProvider = gov.RegistryBoundary{}
+	}
 	if authzProvider == nil {
 		slog.Info("using public authz provider")
 		authzProvider = auth.NewPublicAuthzProvider()
@@ -121,65 +151,67 @@ func App(ctx context.Context, opts ...types.AppOptions) error {
 	if secretStore != nil {
 		kagentOptions = append(kagentOptions, kagent.WithSecretResolver(secretResolver))
 	}
-	defaultKagentAdapter := kagent.New(kagentOptions...)
-	if _, ok := deploymentAdapters[kagent.RuntimeType]; !ok {
-		deploymentAdapters[kagent.RuntimeType] = defaultKagentAdapter
-	}
-	if _, ok := discoverySources[kagent.RuntimeType]; !ok {
-		discoverySources[kagent.RuntimeType] = defaultKagentAdapter.(types.DeploymentDiscoverySource)
-	}
-	if _, ok := discoverySources[v1alpha1.TypeMicrosoftFoundry]; !ok {
-		discoverySources[v1alpha1.TypeMicrosoftFoundry] = microsoftruntime.NewFoundrySource(secretResolver)
-	}
-	if _, ok := discoverySources[v1alpha1.TypeMicrosoftCopilotStudio]; !ok {
-		discoverySources[v1alpha1.TypeMicrosoftCopilotStudio] = microsoftruntime.NewCopilotStudioSource(secretResolver)
-	}
-	controllerConfig := deploymentControllerConfig(cfg)
-	controllerConfig.DependencyKinds = maps.Clone(options.DeploymentDependencyKinds)
-	controllerConfig.Leadership = options.DeploymentControllerLeadership
-	controllerConfig.DeploymentFinalized = options.DeploymentFinalized
-	controllerConfig.DeploymentApplied = options.DeploymentApplied
-	if _, err := controller.StartDeploymentController(ctx, pool, stores, deploymentAdapters, discoverySources, controllerConfig); err != nil {
-		return fmt.Errorf("start deployment controller: %w", err)
-	}
-	// The Plugin controller resolves each plugin's pinned source pointer to a
-	// concrete commit/digest and records the manifest/inventory in PluginStatus
-	// out of band of the API write — same pattern as the Deployment controller.
-	// One git source carries the credential hook for every consumer, so private
-	// repositories are configured in exactly one place.
-	gitCredentials := options.GitCredentials
-	if gitCredentials == nil && secretStore != nil {
-		gitCredentials = gitutil.NewSecretCredentialResolver(secretResolver)
-	}
-	gitSource := gitutil.NewSource(gitCredentials, gitutil.Limits{MaxBytes: bundle.MaxBundleBytes, MaxEntries: bundle.MaxBundleFiles})
-	pluginController, err := controller.NewPluginController(pool, stores, controller.PluginControllerDeps{Git: gitSource})
-	if err != nil {
-		return fmt.Errorf("create plugin controller: %w", err)
-	}
-	if pluginController != nil {
-		if err := pluginController.Start(ctx); err != nil {
-			return fmt.Errorf("start plugin controller: %w", err)
+	if governanceAuth == nil {
+		defaultKagentAdapter := kagent.New(kagentOptions...)
+		if _, ok := deploymentAdapters[kagent.RuntimeType]; !ok {
+			deploymentAdapters[kagent.RuntimeType] = defaultKagentAdapter
 		}
-		defer pluginController.Stop()
-	}
-	// The Skill controller resolves each skill's pinned git source ref to a
-	// concrete commit and records it in SkillStatus out of band of the API write
-	// — the resolve-and-pin counterpart to the Plugin controller, minus the
-	// manifest/inventory scan (a skill has no bundle to enumerate).
-	skillController, err := controller.NewSkillController(pool, stores, controller.SkillControllerDeps{Git: gitSource})
-	if err != nil {
-		return fmt.Errorf("create skill controller: %w", err)
-	}
-	if skillController != nil {
-		if err := skillController.Start(ctx); err != nil {
-			return fmt.Errorf("start skill controller: %w", err)
+		if _, ok := discoverySources[kagent.RuntimeType]; !ok {
+			discoverySources[kagent.RuntimeType] = defaultKagentAdapter.(types.DeploymentDiscoverySource)
 		}
-		defer skillController.Stop()
+		if _, ok := discoverySources[v1alpha1.TypeMicrosoftFoundry]; !ok {
+			discoverySources[v1alpha1.TypeMicrosoftFoundry] = microsoftruntime.NewFoundrySource(secretResolver)
+		}
+		if _, ok := discoverySources[v1alpha1.TypeMicrosoftCopilotStudio]; !ok {
+			discoverySources[v1alpha1.TypeMicrosoftCopilotStudio] = microsoftruntime.NewCopilotStudioSource(secretResolver)
+		}
+		controllerConfig := deploymentControllerConfig(cfg)
+		controllerConfig.DependencyKinds = maps.Clone(options.DeploymentDependencyKinds)
+		controllerConfig.Leadership = options.DeploymentControllerLeadership
+		controllerConfig.DeploymentFinalized = options.DeploymentFinalized
+		controllerConfig.DeploymentApplied = options.DeploymentApplied
+		if _, err := controller.StartDeploymentController(ctx, pool, stores, deploymentAdapters, discoverySources, controllerConfig); err != nil {
+			return fmt.Errorf("start deployment controller: %w", err)
+		}
+		// The Plugin controller resolves each plugin's pinned source pointer to a
+		// concrete commit/digest and records the manifest/inventory in PluginStatus
+		// out of band of the API write — same pattern as the Deployment controller.
+		// One git source carries the credential hook for every consumer, so private
+		// repositories are configured in exactly one place.
+		gitCredentials := options.GitCredentials
+		if gitCredentials == nil && secretStore != nil {
+			gitCredentials = gitutil.NewSecretCredentialResolver(secretResolver)
+		}
+		gitSource := gitutil.NewSource(gitCredentials, gitutil.Limits{MaxBytes: bundle.MaxBundleBytes, MaxEntries: bundle.MaxBundleFiles})
+		pluginController, err := controller.NewPluginController(pool, stores, controller.PluginControllerDeps{Git: gitSource})
+		if err != nil {
+			return fmt.Errorf("create plugin controller: %w", err)
+		}
+		if pluginController != nil {
+			if err := pluginController.Start(ctx); err != nil {
+				return fmt.Errorf("start plugin controller: %w", err)
+			}
+			defer pluginController.Stop()
+		}
+		// The Skill controller resolves each skill's pinned git source ref to a
+		// concrete commit and records it in SkillStatus out of band of the API write
+		// — the resolve-and-pin counterpart to the Plugin controller, minus the
+		// manifest/inventory scan (a skill has no bundle to enumerate).
+		skillController, err := controller.NewSkillController(pool, stores, controller.SkillControllerDeps{Git: gitSource})
+		if err != nil {
+			return fmt.Errorf("create skill controller: %w", err)
+		}
+		if skillController != nil {
+			if err := skillController.Start(ctx); err != nil {
+				return fmt.Errorf("start skill controller: %w", err)
+			}
+			defer skillController.Stop()
+		}
+
+		slog.Info("starting agentregistry", "version", version.Version, "commit", version.GitCommit)
+
+		// Prepare version information
 	}
-
-	slog.Info("starting agentregistry", "version", version.Version, "commit", version.GitCommit)
-
-	// Prepare version information
 	versionInfo := &arv0.VersionBody{
 		Version:   version.Version,
 		GitCommit: version.GitCommit,
@@ -207,6 +239,13 @@ func App(ctx context.Context, opts ...types.AppOptions) error {
 		return fmt.Errorf("failed to initialize HTTP server: %w", err)
 	}
 
+	if governanceAuth != nil {
+		governanceStore := govdb.New(pool)
+		if err := governanceAuth.Attach(ctx, governanceStore); err != nil {
+			return fmt.Errorf("provision governance identities: %w", err)
+		}
+		baseServer.ConfigureGovernance(gov.NewService(governanceStore), governanceAuth)
+	}
 	var server types.Server
 	if options.HTTPServerFactory != nil {
 		server = options.HTTPServerFactory(baseServer, db)

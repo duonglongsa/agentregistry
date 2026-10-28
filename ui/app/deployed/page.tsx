@@ -63,7 +63,7 @@ export default function DeployedPage() {
       })
       setDeployments((deployData.items ?? []).map(toFlatDeployment))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch deployments')
+      setError(err instanceof Error ? err.message : 'Không thể tải danh sách triển khai')
     } finally {
       setLoading(false)
     }
@@ -99,7 +99,7 @@ export default function DeployedPage() {
       setServerToRemove(null)
       fetchDeployments()
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to remove deployment')
+      alert(err instanceof Error ? err.message : 'Không thể gỡ bản triển khai')
     } finally {
       setRemoving(false)
     }
@@ -132,9 +132,9 @@ export default function DeployedPage() {
         {/* Header */}
         <div className="flex items-center justify-between border-b py-4">
           <div>
-            <h1 className="text-xl font-semibold">Deployed Resources</h1>
+            <h1 className="text-xl font-semibold">Tài nguyên đã triển khai</h1>
             <p className="text-[15px] text-muted-foreground">
-              {runningCount} resource{runningCount !== 1 ? 's' : ''} running
+              {runningCount} tài nguyên đang chạy
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function DeployedPage() {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
-                placeholder="Search deployments..."
+                placeholder="Tìm bản triển khai..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-10 text-[15px]"
@@ -165,7 +165,7 @@ export default function DeployedPage() {
                   <SelectValue placeholder="Runtime" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All runtimes</SelectItem>
+                  <SelectItem value="all">Tất cả Runtime</SelectItem>
                   {uniqueRuntimes.map(p => (
                     <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
@@ -173,10 +173,10 @@ export default function DeployedPage() {
               </Select>
               <Select value={filterOrigin} onValueChange={setFilterOrigin}>
                 <SelectTrigger className="w-[140px] h-8 text-sm">
-                  <SelectValue placeholder="Origin" />
+                  <SelectValue placeholder="Nguồn" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All origins</SelectItem>
+                  <SelectItem value="all">Tất cả nguồn</SelectItem>
                   {uniqueOrigins.map(o => (
                     <SelectItem key={o} value={o}>{o}</SelectItem>
                   ))}
@@ -184,10 +184,10 @@ export default function DeployedPage() {
               </Select>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
                 <SelectTrigger className="w-[140px] h-8 text-sm">
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder="Trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All statuses</SelectItem>
+                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
                   {uniqueStatuses.map(s => (
                     <SelectItem key={s} value={s}>{s}</SelectItem>
                   ))}
@@ -201,7 +201,7 @@ export default function DeployedPage() {
                   onClick={() => { setFilterRuntime("all"); setFilterOrigin("all"); setFilterStatus("all") }}
                 >
                   <X className="h-3 w-3" />
-                  Clear
+                  Xóa bộ lọc
                 </Button>
               )}
             </div>
@@ -213,18 +213,18 @@ export default function DeployedPage() {
             <div className="flex items-center justify-center py-20">
               <div className="text-center space-y-3">
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto" />
-                <p className="text-sm text-muted-foreground">Loading resources...</p>
+                <p className="text-sm text-muted-foreground">Đang tải tài nguyên...</p>
               </div>
             </div>
           ) : (agents.length === 0 && mcpServers.length === 0) ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Server className="h-8 w-8 text-muted-foreground mb-4 opacity-40" />
-              <p className="text-base font-medium mb-1">No resources deployed</p>
+              <p className="text-base font-medium mb-1">Chưa có tài nguyên nào được triển khai</p>
               <p className="text-sm text-muted-foreground mb-4 max-w-xs">
-                Deploy MCP servers or agents from the Catalog to see them here.
+                Triển khai MCP Server hoặc Agent từ Danh mục để xem tại đây.
               </p>
               <Link href="/">
-                <Button size="sm" variant="outline">Go to Catalog</Button>
+                <Button size="sm" variant="outline">Đi đến Danh mục</Button>
               </Link>
             </div>
           ) : (
@@ -281,19 +281,19 @@ export default function DeployedPage() {
       <Dialog open={!!serverToRemove} onOpenChange={(open) => !open && setServerToRemove(null)}>
         <DialogContent onClose={() => setServerToRemove(null)}>
           <DialogHeader>
-            <DialogTitle>Remove Deployment</DialogTitle>
+            <DialogTitle>Gỡ bản triển khai</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove <strong>{serverToRemove?.serverName}</strong> (tag {serverToRemove?.tag}) ({serverToRemove?.resourceType})?
+              Bạn có chắc muốn gỡ <strong>{serverToRemove?.serverName}</strong> (tag {serverToRemove?.tag}) ({serverToRemove?.resourceType})?
               <br /><br />
-              This will stop the server and remove it from your deployments. This action cannot be undone.
+              Thao tác này sẽ dừng Server và xóa khỏi danh sách triển khai. Không thể hoàn tác.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setServerToRemove(null)} disabled={removing}>
-              Cancel
+              Hủy
             </Button>
             <Button variant="destructive" onClick={confirmRemove} disabled={removing}>
-              {removing ? 'Removing...' : 'Remove'}
+              {removing ? 'Đang gỡ...' : 'Gỡ'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -329,7 +329,7 @@ function DeploymentRow({ item, onRemove, removing }: {
                 />
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p>{item.status}{hasError ? ' — click to show error' : ''}</p>
+                <p>{item.status}{hasError ? ' — nhấp để xem lỗi' : ''}</p>
               </TooltipContent>
             </Tooltip>
             <h3 className="text-lg font-semibold">{item.serverName}</h3>
@@ -337,11 +337,11 @@ function DeploymentRow({ item, onRemove, removing }: {
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground mt-1">
             <span className="font-mono">{item.tag}</span>
-            <span>{item.runtimeId || "unknown"}</span>
+            <span>{item.runtimeId || "không xác định"}</span>
             <span>{item.origin}</span>
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              {item.deployedAt ? new Date(item.deployedAt).toLocaleDateString() : "—"}
+              {item.deployedAt ? new Date(item.deployedAt).toLocaleDateString("vi-VN") : "—"}
             </span>
             {item.env?.namespace && (
               <span className="font-mono">{item.env.namespace}</span>
@@ -365,7 +365,7 @@ function DeploymentRow({ item, onRemove, removing }: {
             disabled={removing}
           >
             <Trash2 className="h-3 w-3" />
-            Remove
+            Gỡ
           </Button>
         )}
       </div>

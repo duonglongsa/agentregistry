@@ -80,16 +80,16 @@ export function AddPromptDialog({ open, onOpenChange, onPromptAdded }: AddPrompt
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Prompt</DialogTitle>
+          <DialogTitle>Thêm Prompt</DialogTitle>
           <DialogDescription>
-            Add a new prompt to the registry
+            Thêm Prompt mới vào Registry
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="name">
-              Prompt Name <span className="text-red-500">*</span>
+              Tên Prompt <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -104,7 +104,7 @@ export function AddPromptDialog({ open, onOpenChange, onPromptAdded }: AddPrompt
 
           <div className="space-y-2">
             <Label htmlFor="description">
-              Description
+              Mô tả
             </Label>
             <Input
               id="description"
@@ -134,7 +134,7 @@ export function AddPromptDialog({ open, onOpenChange, onPromptAdded }: AddPrompt
 
           <div className="space-y-2">
             <Label htmlFor="content">
-              Prompt Content <span className="text-red-500">*</span>
+              Nội dung Prompt <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="content"
@@ -156,10 +156,10 @@ export function AddPromptDialog({ open, onOpenChange, onPromptAdded }: AddPrompt
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
-              Cancel
+              Hủy
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Adding..." : "Add Prompt"}
+              {loading ? "Đang thêm..." : "Thêm Prompt"}
             </Button>
           </div>
         </form>

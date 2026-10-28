@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState } from "react"
 import { AgentResponse } from "@/lib/admin-api"
 import { Badge } from "@/components/ui/badge"
@@ -51,6 +52,7 @@ export function AgentDetail({ agent, allTags: allTagsProp }: AgentDetailProps) {
 
   return (
     <div className="space-y-6">
+ <Link href="/governance" className="text-sm text-primary underline">Governance · hồ sơ, instance và phê duyệt Registry</Link>
         {/* Header */}
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded bg-primary/8 flex items-center justify-center flex-shrink-0">
@@ -114,15 +116,15 @@ export function AgentDetail({ agent, allTags: allTagsProp }: AgentDetailProps) {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="technical">Technical</TabsTrigger>
-            <TabsTrigger value="raw">Raw</TabsTrigger>
+            <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+            <TabsTrigger value="technical">Kỹ thuật</TabsTrigger>
+            <TabsTrigger value="raw">Dữ liệu thô</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             {agentData.description && (
               <section>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Description</h3>
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Mô tả</h3>
                 <p className="text-[15px] leading-relaxed">{agentData.description}</p>
               </section>
             )}
@@ -141,23 +143,23 @@ export function AgentDetail({ agent, allTags: allTagsProp }: AgentDetailProps) {
             )}
 
             <section>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Timestamps</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Mốc thời gian</h3>
               <div className="space-y-2 text-sm">
                 {agentData.updatedAt && (
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Last Updated</span>
+                    <span className="text-muted-foreground">Cập nhật gần nhất</span>
                     <span className="font-mono">{formatDate(agentData.updatedAt)}</span>
                   </div>
                 )}
                 {official?.publishedAt && (
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Published</span>
+                    <span className="text-muted-foreground">Đã xuất bản</span>
                     <span className="font-mono">{formatDate(official.publishedAt)}</span>
                   </div>
                 )}
                 {official?.updatedAt && (
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Registry Updated</span>
+                    <span className="text-muted-foreground">Registry cập nhật</span>
                     <span className="font-mono">{formatDate(official.updatedAt)}</span>
                   </div>
                 )}
