@@ -9,7 +9,7 @@ async function unwrap<T>(promise: Promise<{ data?: T; error?: unknown; response:
   const result = await promise
   if (result.error || !result.response.ok) {
     const error = result.error as { detail?: string }
-    throw new Error(result.response.status === 401 ? "Sign in required. Your session may have expired." : error?.detail || "Unable to complete this action. Refresh and try again.")
+    throw new Error(result.response.status === 401 ? "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại." : error?.detail || "Không thể hoàn tất thao tác. Hãy tải lại trang và thử lại.")
   }
   return result.data as T
 }

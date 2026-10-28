@@ -24,7 +24,7 @@ function displayValue(key: string, value: unknown): string {
   if (key === "requestType") return value === "agent" ? "Duyệt hồ sơ Agent" : "Quyền truy cập Tool"
   if (key === "registrationScope") return value === "internal" ? "Agent nội bộ MB" : "Bên ngoài phạm vi Governance"
   if (key === "location") return ({ platform: "Platform", unit_infrastructure: "Hạ tầng đơn vị", workstation: "Máy trạm" } as Record<string, string>)[String(value)] ?? String(value)
-  if (key === "expiresAt" || key === "decidedAt" || key === "revokedAt") return new Date(String(value)).toLocaleString("vi-VN")
+  if (["expiresAt", "Thời điểm quyết định", "Thời điểm thu hồi"].includes(key)) return new Date(String(value)).toLocaleString("vi-VN")
   if (Array.isArray(value)) return value.join(", ")
   if (typeof value === "object") return JSON.stringify(value, null, 2)
   return governanceLabel(String(value))

@@ -50,6 +50,18 @@ Open <http://127.0.0.1:3000/governance>. The backend is at
 sets all safety flags explicitly. Do not bind local-demo mode to a public
 interface or use its credentials outside this disposable demo database.
 
+The `Danh mục` page detects governance mode and reads Agent, MCP Server and Tool
+snapshot records through the department-scoped governance API. The legacy
+upstream `/v0` catalog API is intentionally disabled in governance mode because
+it does not enforce department visibility. Skills, Prompts and runtime deploy
+remain upstream capabilities in public mode; they are not available through
+the scoped governance catalog. A session is required to view this page in
+governance mode.
+
+Tool snapshots are reviewed directly from draft by a different Approver. The
+`Hộp thư phê duyệt` page shows draft tools separately from agent-profile and
+tool-access requests, which follow draft → pending_review → decision.
+
 To stop, press Ctrl+C in the two host terminals. PostgreSQL may remain running,
 or be stopped without deleting its volume:
 

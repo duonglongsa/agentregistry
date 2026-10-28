@@ -3,9 +3,11 @@ import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { CreateForm } from "../create-form"
 import { RecordDetail } from "../record-detail"
+import { RecordName } from "../record-name"
 import type { Actor, Record as GovRecord } from "@/lib/api/types.gen"
 const command = vi.fn()
-vi.mock("@/lib/governance-api", () => ({ governance: { command: (...args: unknown[]) => command(...args), list: vi.fn().mockResolvedValue({ items: [], total: 0 }) } }))
+const get = vi.fn()
+vi.mock("@/lib/governance-api", () => ({ governance: { command: (...args: unknown[]) => command(...args), get: (...args: unknown[]) => get(...args), list: vi.fn().mockResolvedValue({ items: [], total: 0 }) } }))
 const tool: GovRecord = { id: "tool-id", kind: "tool", department: "ktud", owner: "tools", state: "draft", version: 1, data: { name: "create_issue" }, hash: "hash", createdAt: "2026-01-01T00:00:00Z", updatedAt: "2026-01-01T00:00:00Z" }
 const approver: Actor = { id: "reviewer", name: "Reviewer", department: "ktud", roles: ["approver"], revision: 1 }
 beforeEach(() => vi.clearAllMocks())
@@ -50,5 +52,12 @@ describe("Governance forms", () => {
     render(<RecordDetail record={tool} actor={approver} onRefresh={vi.fn()} onSelect={vi.fn()} />)
     expect(screen.getByRole("button", { name: "Phê duyệt" })).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Từ chối" })).toBeInTheDocument()
+  })
+  it("shows the Agent and Instance in a grant name", async () => {
+    get.mockImplementation((id: string) => Promise.resolve(id === "instance-id"
+      ? { ...tool, id, kind: "instance", parent: "agent-id", data: { name: "ktv-dev", environment: "dev" } }
+      : { ...tool, id, kind: "agent", data: { name: "ktv-agent" } }))
+    render(<RecordName record={{ ...tool, id: "grant-id", kind: "grant", parent: "instance-id", data: { name: "create_issue", snapshot: "v1" } }} />)
+    expect(await screen.findByText("ktv-agent / dev → create_issue@v1")).toBeInTheDocument()
   })
 })
